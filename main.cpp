@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 using namespace std;
 
 class Multime{
@@ -20,6 +21,7 @@ Multime::Multime(int v1[], int n1) {
     n = n1;
     for(i=1; i<=n; ++i)
         v[i] = v1[i];
+    this->transformare();
 }
 
 Multime::Multime(const Multime &A) {
@@ -38,9 +40,11 @@ Multime::~Multime() {
 
 int caut(const int v[], int n, int poz, int x) { //returneaza pozitia primei aparitii a elementului x in vectorul v dupa pozitia poz
     int p = -1, i;
-    for(i=poz+1; i<=n && p == -1; ++i)
-        if(v[i] == x)
+    for(i = poz+1; i <= n; ++i)
+        if(v[i] == x) {
             p = i;
+            break;
+        }
     return p;
 }
 
@@ -69,7 +73,7 @@ Multime operator + (const Multime &A, const Multime &B){
     for(i=1; i<=A.n; ++i)
         c[++k] = A.v[i];
     for(i=1; i<=B.n; ++i)
-        if(caut(c, k, 1, B.v[i]) == -1)
+        if(caut(c, k, 0, B.v[i]) == -1)
             c[++k] = B.v[i];
     return Multime(c, k);
 }
@@ -77,7 +81,7 @@ Multime operator + (const Multime &A, const Multime &B){
 Multime operator * (const Multime &A, const Multime &B){
     int i, k = 0, c[1001];
     for(i=1; i<=A.n; ++i)
-        if(caut(B.v, B.n, 1, A.v[i]) != -1)
+        if(caut(B.v, B.n, 0, A.v[i]) != -1)
             c[++k] = A.v[i];
     return Multime(c, k);
 }
@@ -85,7 +89,7 @@ Multime operator * (const Multime &A, const Multime &B){
 Multime operator - (const Multime &A, const Multime &B){
     int c[1001], k = 0, i;
     for(i= 1; i<=A.n; ++i)
-        if(caut(B.v, B.n, 1, A.v[i]) == -1)
+        if(caut(B.v, B.n, 0, A.v[i]) == -1)
             c[++k] = A.v[i];
     return Multime(c, k);
 }
@@ -101,23 +105,29 @@ istream &operator >> (istream &input, Multime &A){
 
 ostream &operator << (ostream &output, Multime &A){
     int i;
-    for(i=1; i<=A.n; ++i)
-        output << A.v[i] << " ";
-    output << "\n";
+    if(A.n == 0) output << "Multimea vida \n";
+    else {
+        output << "{";
+        for (i = 1; i < A.n; ++i)
+            output << A.v[i] << ", ";
+        output << A.v[A.n] << "}" << "\n";
+    }
     return output;
 }
 
 int main() {
-    int v[1001];
-    Multime A(v);
-    cin >> A;
-    Multime B(A);
-    cin >> B;
-    Multime C = A + B;
-    cout << C;
-    Multime D = A * B;
-    cout << D;
-    Multime E = A - B;
-    cout << E;
+    ifstream fin("exemple.txt");
+    int v[1001], nrExemple, i;
+    Multime A(v), B(v);
+    fin >> nrExemple;
+    for(i=1; i<=nrExemple; ++i){
+        fin >> A >> B;
+        Multime C = A + B;
+        cout << "Reuniune: " << C;
+        Multime D = A * B;
+        cout << "Intersectie: " << D;
+        Multime E = A - B;
+        cout << "Diferenta: " <<  E << "\n";
+    }
     return 0;
 }
