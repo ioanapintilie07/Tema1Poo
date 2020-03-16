@@ -2,8 +2,10 @@
 #include <fstream>
 using namespace std;
 
+const int dimensiuneVector = 1001;
+
 class Multime{
-    int v[1001], n;
+    int v[dimensiuneVector], n;
 public:
     Multime(int v1[], int n1=0);
     Multime(const Multime &A);
@@ -117,7 +119,9 @@ ostream &operator << (ostream &output, Multime &A){
 
 int main() {
     ifstream fin("exemple.txt");
-    int v[1001], nrExemple, i;
+    int v[dimensiuneVector], nrExemple, i, valori = dimensiuneVector;
+    for(i=0; i<=dimensiuneVector; ++i)
+        v[i] = valori--;
     Multime A(v), B(v);
     fin >> nrExemple;
     for(i=1; i<=nrExemple; ++i){
